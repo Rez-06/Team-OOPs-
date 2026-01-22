@@ -1,14 +1,20 @@
-#include<iostream>
-#include<fstream>
-#include<string.h>
+#ifndef LOGIN_H
+#define LOGIN_H
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include "passcode.h"
 using namespace std;
 
-class temp{
-    string userName,Email,password;
+class temp : public pass {
+    string userName, Email, password;
     fstream file;
-    string searchName,searchPass,searchEmail;
+    string searchName, searchPass, searchEmail;
 public:
     void login();
     void signUP();
     void forgot();
-}obj;
+};
+
+#endif
