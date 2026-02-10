@@ -1,6 +1,6 @@
 #ifndef LOGIN_H
-#define LOGIN_H
 
+#define LOGIN_H
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -11,10 +11,11 @@ class temp : public pass {
     string userName, Email, password;
     fstream file;
     string searchName, searchPass, searchEmail;
-public:
-    void login();
-    void signUP();
-    void forgot();
+    bool loggedIn;
+    public:
+        bool isLoggedIn();
+        void login();
+        void signUP();
+        void forgot();
 };
-
 #endif

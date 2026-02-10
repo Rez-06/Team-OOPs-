@@ -1,0 +1,46 @@
+# depslib dependency file v1.0
+1770730868 source:c:\users\lenovo\desktop\hillclimbracing\new folder\resturant management system\login.cpp
+	"login.h"
+	"passcode.h"
+	<iostream>
+	<cstdlib>
+
+1770730656 c:\users\lenovo\desktop\hillclimbracing\new folder\resturant management system\login.h
+	<iostream>
+	<fstream>
+	<string>
+	"passcode.h"
+
+1770725862 source:c:\users\lenovo\desktop\hillclimbracing\new folder\resturant management system\main.cpp
+	<iostream>
+	"login.h"
+
+1770730960 c:\users\lenovo\desktop\hillclimbracing\new folder\resturant management system\passcode.h
+	<string>
+
+1770730845 source:c:\users\lenovo\desktop\hillclimbracing\new folder\resturant management system\passcode.cpp
+	"passcode.h"
+	<iostream>
+
+1769274305 source:c:\users\lenovo\desktop\hillclimbracing\new folder\resturant management system\food_menu.cpp
+	<iostream>
+	<fstream>
+	<cstring>
+	"Food_menu.h"
+	<limits>
+
+1770728602 c:\users\lenovo\desktop\hillclimbracing\new folder\resturant management system\food_menu.h
+	<iostream>
+	<fstream>
+	<cstring>
+
+1770724196 source:c:\users\lenovo\desktop\hillclimbracing\new folder\resturant management system\inventory.cpp
+	<iostream>
+	<fstream>
+	<cstring>
+	<limits>
+	"Inventory.h"
+
+1770731497 c:\users\lenovo\desktop\hillclimbracing\new folder\resturant management system\inventory.h
+	"Food_menu.h"
+
