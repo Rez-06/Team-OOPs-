@@ -1,3 +1,5 @@
+#ifndef FOOD_MENU_H
+#define FOOD_MENU_H
 #include<iostream>
 #include<fstream>
 #include<cstring>
@@ -32,3 +34,4 @@ public:
     void searchByPriceRange();
     void viewRecipe();
 };
+#endif

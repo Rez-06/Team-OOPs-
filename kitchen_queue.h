@@ -11,10 +11,11 @@ private:
     queue<Order> pendingOrders;
 
 public:
-    void addOrder(const Order& order);
+    bool addOrder(Order& order,Inventory &inv);
     bool hasOrders() const;
-    Order getNextOrder();
-    void completeOrder();
+    Order& getNextOrder();
+    void completeOrder(AuthorizedPerson* p);
+    void completeAllOrders(AuthorizedPerson* p);
 };
 
 #endif

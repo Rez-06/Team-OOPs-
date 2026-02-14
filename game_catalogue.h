@@ -19,9 +19,11 @@ private:
     vector<Game> games;
 
 public:
-    void addGame();
-    void removeGame(int id);
-    void viewGames() const;
+    void addGame(int id,string name,string genre,string description,string releaseDate,AuthorizedPerson *authorized_person);
+    void addGame(Game game,AuthorizedPerson *authorized_person);
+    void removeGame(int id,AuthorizedPerson *authorized_person);
+    void viewAllGames() const;
+    void GameInfo(Game g) const;
     Game getGameById(int id) const;
 };
 

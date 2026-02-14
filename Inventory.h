@@ -16,8 +16,9 @@ public:
     void refillIngredient();
     void viewInventory();
     void updateIngredient();
-    bool isAvailable(const MenuItem& item);
+    bool isAvailable(const MenuItem& item,int quantity);///Order.cpp needs the quentity
     void deductIngredients(const MenuItem& item, int qty);
+    void addIngredientAccordingToMakeParticularItem(const MenuItem& item, int qty);///This required for order.cpp calculation
 };
 
 #endif

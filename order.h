@@ -9,25 +9,31 @@
 using namespace std;
 
 struct OrderItem {
-    int menuId;
+    MenuItem item;
     int quantity;
 };
 
 class Order {
 private:
-    int orderId;
+    const int orderId;
     vector<OrderItem> items;
-    double totalAmount;
-    string status; // pending / cooking / done
-
+    double totalAmount;///cost
+    string status; // pending / cooking / done /rejected
+    static int orderCount;
 public:
-    Order();
-    void addItem(int menuId, int quantity);
-    bool placeOrder(Inventory& inv);
+    Order(string Status);
+    void addItem(MenuItem menuitem,int quantity);
+    void removeItem(MenuItem menuitem,int quantity);
+    //bool placeOrder(Inventory& inv);
+    bool IsOrderAcceptableThenDeductInventory(Inventory &inv);
     double getTotal() const;
     int getOrderId() const;
     string getStatus() const;
-    vector<OrderItem> getItems() const;
+    vector<OrderItem> getItems() const;//this is useless
+    void setStatus(const string Status);
+    void DisplayDetails() const;
+    Order operator+=(OrderItem order_item);
+    Order operator-=(OrderItem order_item);
 };
 
 #endif
