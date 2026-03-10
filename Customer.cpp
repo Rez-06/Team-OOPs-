@@ -2,6 +2,8 @@
 #include <iostream>
 using namespace std;
 
+customer::customer() : total_bill(0), food_bill(0), game_bill(0) {}//constructor
+
 void customer::Display_bill()
 {
     total_bill = food_bill + game_bill;
@@ -25,24 +27,19 @@ void customer::order_food()
 {
     int id;
     double price;
-
     Food_menu menu;
-
+    
     cout << "\nSelect food item ID: ";
     cin >> id;
-
     cout << "Enter price of selected item: ";
     cin >> price;
-
     food_bill += price;
-
     cout << "Food added to bill.\n";
 }
 
 void customer::reserve_game_zone()
 {
     Rental rental;
-
     string timeSlot;
     int controllers;
     int minutes;
@@ -52,11 +49,8 @@ void customer::reserve_game_zone()
 
     cout << "Controllers required: ";
     cin >> controllers;
-
     cout << "Duration (minutes): ";
     cin >> minutes;
-
     game_bill += rental.calculatePrice(controllers, minutes);
-
     cout << "Game zone reserved.\n";
 }
