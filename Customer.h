@@ -1,6 +1,7 @@
 #include<iostream>
 #include"Food_menu.h"
 #include"game_catalogue.h"
+#include"rental.h"
 using namespace std;
 
 class customer{
@@ -16,4 +17,5 @@ public:
     void order_food();
     void reserve_game_zone();
 };
+
 
