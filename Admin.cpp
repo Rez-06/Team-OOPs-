@@ -1,21 +1,19 @@
 #include "admin.h"
 #include <iostream>
-#include<exception>
-
+#include <limits>
 using namespace std;
 
 void Admin::Identity() const {
     cout << "\n=== ADMIN ===\n";
-    cout << "Name: " << getName() << endl;
-    cout << "ID: " << getId() << endl;
-    cout << "Email: " << getEmail() << endl;
+    cout << "Name: " << name << endl;
+    cout << "ID: " << id << endl;
+    cout << "Email: " << eMail << endl;
     cout << "Share: " << shareAmount << endl;
 }
-
 string Admin::post() const {
     return "Admin";
 }
-//food
+// FOOD MENU
 void Admin::manageFoodMenu(Food_menu& menu) {
     int choice;
 
@@ -28,14 +26,15 @@ void Admin::manageFoodMenu(Food_menu& menu) {
     cin >> choice;
 
     switch(choice) {
-        case 1: menu.displayMenu(); break;
-        case 2: menu.addItem(); break;
-        case 3: menu.updateItem(); break;
-        case 4: menu.deleteItem(); break;
+        case 1: menu.seeMenu(); break;
+        case 2: menu.addMenu(); break;
+        case 3: menu.updateMenuItem(); break;
+        case 4: menu.deleteMenuItem(); break;
         default: cout << "Invalid choice\n";
     }
 }
-//inventry
+
+// INVENTORY
 void Admin::manageInventory(Inventory& inventory) {
     int choice;
 
@@ -53,7 +52,8 @@ void Admin::manageInventory(Inventory& inventory) {
         default: cout << "Invalid choice\n";
     }
 }
-//game
+
+// GAME CATALOGUE
 void Admin::manageGameCatalogue(GameCatalogue& games) {
     int choice;
 
@@ -61,24 +61,57 @@ void Admin::manageGameCatalogue(GameCatalogue& games) {
     cout << "1. View Games\n";
     cout << "2. Add Game\n";
     cout << "3. Remove Game\n";
-    cout << "4. Update Price\n";
     cout << "Choice: ";
     cin >> choice;
 
     switch(choice) {
-        case 1: games.viewAllGames(); break;
-        case 2: games.addGame(); break;
-        case 3: games.removeGame(); break;
-        case 4: games.updateGamePrice(); break;
-        default: cout << "Invalid choice\n";
+        case 1:
+            games.viewAllGames();
+            break;
+
+        case 2: {
+            int id;
+            string name, genre, description, releaseDate;
+
+            cout << "Enter ID: ";
+            cin >> id;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+            cout << "Enter Name: ";
+            getline(cin, name);
+
+            cout << "Enter Genre: ";
+            getline(cin, genre);
+
+            cout << "Enter Description: ";
+            getline(cin, description);
+
+            cout << "Enter Release Date: ";
+            getline(cin, releaseDate);
+
+            games.addGame(id, name, genre, description, releaseDate, this);
+            break;
+        }
+
+        case 3: {
+            int id;
+            cout << "Enter Game ID to remove: ";
+            cin >> id;
+            games.removeGame(id, this);
+            break;
+        }
+
+        default:
+            cout << "Invalid choice\n";
     }
 }
-//rental
+
+// RENTAL
 void Admin::updateRentalPricing(Rental& rental) {
     rental.updatePricing();
 }
 
-//register
+// REGISTER
 void Admin::viewRegister(Register& reg) {
     int choice;
 
@@ -98,26 +131,22 @@ void Admin::viewRegister(Register& reg) {
         default: cout << "Invalid choice\n";
     }
 }
-//cash
+//cashpout
 void Admin::cashOut(Register& reg) {
-
     double amount;
     string reason;
 
     cout << "\nCurrent Balance: " << reg.getTotalCash() << " BDT\n";
 
-    cout << "Amount to withdraw: ";
+    cout << "Enter amount to withdraw: ";
     cin >> amount;
 
-    cin.ignore();
-    cout << "Reason: ";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    cout << "Enter reason: ";
     getline(cin, reason);
 
-    try {
-        reg.cashOut(amount, reason);
-        cout << "Cash out successful.\n";
-    }
-    catch(const exception& e) {
-        cout << "Error: " << e.what() << endl;
-    }
+    reg.cashOut(amount, reason);
+
+    cout << "Cash out completed.\n";
 }
