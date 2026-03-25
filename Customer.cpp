@@ -1,56 +1,98 @@
 #include "customer.h"
+#include "Register.h"
 #include <iostream>
+#include <fstream>
+#include <limits>
+
 using namespace std;
 
-customer::customer() : total_bill(0), food_bill(0), game_bill(0) {}//constructor
+customer::customer()
+{
+    total_bill = 0;
+    food_bill = 0;
+    game_bill = 0;
+}
 
 void customer::Display_bill()
 {
     total_bill = food_bill + game_bill;
 
     cout << "\n===== BILL SUMMARY =====\n";
-    cout << "Food Bill: " << food_bill << endl;
-    cout << "Game Bill: " << game_bill << endl;
-    cout << "Total Bill: " << total_bill << endl;
+    cout << "Food Bill: " << food_bill << " BDT\n";
+    cout << "Game Bill: " << game_bill << " BDT\n";
+    cout << "Total Bill: " << total_bill << " BDT\n";
 }
+
 void customer::display_food_menu()
 {
     Food_menu menu;
     menu.seeMenu();
 }
+
 void customer::display_game_collection()
 {
     GameCatalogue catalogue;
     catalogue.viewAllGames();
 }
+
 void customer::order_food()
 {
-    int id;
-    double price;
     Food_menu menu;
-    
-    cout << "\nSelect food item ID: ";
+    menu.seeMenu();
+
+    ifstream file("menu.dat", ios::binary);
+    if(!file){
+        cout << "Menu not available\n";
+        return;
+    }
+
+    int id;
+    cout << "\nEnter food ID: ";
     cin >> id;
-    cout << "Enter price of selected item: ";
-    cin >> price;
-    food_bill += price;
-    cout << "Food added to bill.\n";
+
+    MenuItem item;
+    bool found = false;
+
+    while(file.read((char*)&item, sizeof(item))){
+        if(item.id == id){
+            food_bill += item.price;
+            cout << "Added: " << item.name << " | Price: " << item.price << " BDT\n";
+            found = true;
+            break;
+        }
+    }
+
+    if(!found){
+        cout << "Food not found\n";
+    }
+
+    file.close();
 }
 
 void customer::reserve_game_zone()
 {
     Rental rental;
+    Register reg;
+
     string timeSlot;
     int controllers;
     int minutes;
 
     cout << "\nEnter time slot: ";
-    cin >> timeSlot;
+    cin.ignore();
+    getline(cin, timeSlot);
 
-    cout << "Controllers required: ";
+    cout << "Controllers: ";
     cin >> controllers;
-    cout << "Duration (minutes): ";
+
+    cout << "Duration (30 or 60): ";
     cin >> minutes;
-    game_bill += rental.calculatePrice(controllers, minutes);
-    cout << "Game zone reserved.\n";
+
+    try{
+        rental.bookSlot(timeSlot, controllers, minutes, reg);
+        game_bill += rental.calculatePrice(controllers, minutes);
+    }
+    catch(exception &e){
+        cout << "Error: " << e.what() << endl;
+    }
 }
