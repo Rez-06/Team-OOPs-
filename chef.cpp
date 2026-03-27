@@ -1,7 +1,19 @@
 #include "chef.h"
 #include <bits/stdc++.h>
 #include <fstream>
+#include <stdexcept>
 using namespace std;
+void Chef::completeOrder(KitchenQueue& queue){
+    try{
+        if(!queue.hasOrders()){
+            throw runtime_error("No orders available");
+        }
+        queue.completeOrder(this);
+    }
+    catch(const exception& e){
+        cout << e.what() << endl;
+    }
+}
 static void showRecipeById(int menuId) {
     ifstream file("menu.dat", ios::binary);
     if (!file) {
@@ -49,7 +61,4 @@ void Chef::viewPendingOrders(KitchenQueue& queue) {
 }
 void Chef::viewRecipe(int menuId, Food_menu&) {
     showRecipeById(menuId);
-}
-void Chef::completeOrder(KitchenQueue& queue) {
-    queue.completeOrder(this);
 }
