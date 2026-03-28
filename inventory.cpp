@@ -15,7 +15,7 @@ void Inventory::addIngredient()
     cout << "Enter ingredient ID: ";
     cin >> ing.id;
 
-    // 🔥 Duplicate ID check
+    //  Duplicate ID check
     while (check.read(reinterpret_cast<char *>(&temp), sizeof(temp)))
     {
         if (temp.id == ing.id)
