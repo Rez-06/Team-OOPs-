@@ -1,4 +1,3 @@
-
 #ifndef RENTAL_H
 #define RENTAL_H
 
@@ -7,7 +6,8 @@
 #include "Register.h"
 using namespace std;
 
-class Rental {
+class Rental
+{
 private:
     int totalSlots; // default 4
     map<string, int> bookingSlots;
@@ -22,7 +22,7 @@ public:
 
     bool isAvailable(string timeSlot) const;
     double calculatePrice(int controllers, int minutes) const;
-    void bookSlot(string timeSlot, int controllers, int minutes, Register& reg);
+    void bookSlot(string timeSlot, int controllers, int minutes, Register &reg);
 
     void updatePricing();
     void updateSlots(int slots);

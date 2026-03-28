@@ -29,9 +29,9 @@ public:
     void addMenu();
     void seeMenu();
     void updateMenuItem();
-    void deleteMenuItem();
-    void searchByName();
-    void searchByPriceRange();
+    //void deleteMenuItem();
+    //void searchByName();
+    //void searchByPriceRange();
     void viewRecipe();
 };
 #endif

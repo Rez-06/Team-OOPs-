@@ -12,10 +12,20 @@ class temp : public pass {
     fstream file;
     string searchName, searchPass, searchEmail;
     bool loggedIn;
+    bool isCustomer=false;
+    int id;
+    string share;
+    string joinDate;
     public:
         bool isLoggedIn();
         void login();
         void signUP();
         void forgot();
+        bool IsCustomer() const;
+        int getId() const;
+        string getShare() const;
+        string getJoinDate() const;
+        string getEmail() const;
+        string getName() const;
 };
 #endif

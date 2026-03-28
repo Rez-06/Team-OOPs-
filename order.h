@@ -15,13 +15,14 @@ struct OrderItem {
 
 class Order {
 private:
-    const int orderId;
+    int orderId;
     vector<OrderItem> items;
     double totalAmount;///cost
     string status; // pending / cooking / done /rejected
     static int orderCount;
 public:
     Order(string Status);
+    Order(const Order &o);
     void addItem(MenuItem menuitem,int quantity);
     void removeItem(MenuItem menuitem,int quantity);
     //bool placeOrder(Inventory& inv);
@@ -30,10 +31,14 @@ public:
     int getOrderId() const;
     string getStatus() const;
     vector<OrderItem> getItems() const;//this is useless
+    void setTotal(const double amount);
+    void setOrderId(const int id);
     void setStatus(const string Status);
+    void setItem(const OrderItem i,int index);
     void DisplayDetails() const;
     Order operator+=(OrderItem order_item);
     Order operator-=(OrderItem order_item);
+    Order operator=(const Order &o);
 };
 
 #endif

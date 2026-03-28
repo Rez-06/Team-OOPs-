@@ -7,6 +7,17 @@ Order::Order(string Status="pending"):orderId(orderCount){
     status=Status;
     orderCount++;
 }
+Order::Order(const Order &o):orderId(o.orderId){
+    items=o.getItems();
+    totalAmount=o.getTotal();
+    status=o.getStatus();
+}
+Order Order::operator=(const Order &o){
+    orderId=o.getOrderId();
+    items=o.getItems();
+    totalAmount=o.getTotal();
+    status=o.getStatus();
+}
 void Order::addItem(MenuItem menuitem,int quantity){
     OrderItem i;
     i.item=menuitem;
@@ -76,6 +87,15 @@ string Order::getStatus() const{
 }
 vector<OrderItem> Order::getItems() const{
     return items;
+}
+void Order::setTotal(const double amount){
+    totalAmount=amount;
+}
+void Order::setOrderId(const int id){
+    orderId=id;
+}
+void Order::setItem(const OrderItem i,int index){
+    items[index]=i;
 }
 void Order::setStatus(const string Status){
     status=Status;

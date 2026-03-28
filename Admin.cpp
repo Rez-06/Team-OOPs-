@@ -29,7 +29,7 @@ void Admin::manageFoodMenu(Food_menu& menu) {
         case 1: menu.seeMenu(); break;
         case 2: menu.addMenu(); break;
         case 3: menu.updateMenuItem(); break;
-        case 4: menu.deleteMenuItem(); break;
+        //case 4: menu.deleteMenuItem(); break;
         default: cout << "Invalid choice\n";
     }
 }

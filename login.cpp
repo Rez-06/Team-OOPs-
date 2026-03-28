@@ -38,19 +38,30 @@ void clearScreen() {
                 cout<<"3. Customer"<<endl;
                 char mode; cin>>mode;
                 cin.ignore();
-                bool isCustomer=false;
+                isCustomer=false;
                 string temp;
                 switch(mode){
                     case '1':
                         cout<<"Admin key::";
                         getline(cin,temp);
                         isAdmin(temp);
-
+                        if(isAdmin()){
+                          cout << "Enter your Admin Id: ";
+                          cin >> id;
+                          cout << "Enter your share amount: ";
+                          cin >> share;
+                        }                        
                         break;
                     case '2':
                         cout<<"Chef key::";
                         getline(cin,temp);
                         isChef(temp);
+                        if(isChef()){
+                            cout << "Enter your shef id: ";
+                            cin >> id;
+                            cout << "Enter your join date: ";
+                            cin >> joinDate;
+                        }
                         break;
                     case '3':
                         cout<<"\n\t\tWelcome "<<userName<<" to XOR Gaming Cafe"<<endl;
@@ -67,6 +78,24 @@ void clearScreen() {
     }
     if(loggedIn==false)cout<<"Login Attempt Failed"<<endl;
     file.close();
+    }
+bool temp::IsCustomer() const{
+    return isCustomer;
+}
+int temp::getId() const{
+    return id;
+}
+string temp::getEmail() const{
+    return Email;
+}
+string temp::getName() const{
+    return userName;
+}
+string temp::getShare() const{
+    return share;
+}
+string temp::getJoinDate() const{
+    return joinDate;
 }
 void temp::signUP(){
     cout<<"Enter your User Name ::";
@@ -80,7 +109,7 @@ void temp::signUP(){
     file.close();
     clearScreen();
     cout<<"Sign Up successful"<<endl;
-    }
+}
 void temp::forgot(){
     cout<<"\nEnter Your User Name ::";
     getline(cin,searchName);

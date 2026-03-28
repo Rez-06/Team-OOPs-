@@ -1,7 +1,50 @@
 #include "game_catalogue.h"
 #include "AuthorizedPerson.h"
 #include<bits/stdc++.h>
+#include<fstream>
 using namespace std;
+GameCatalogue::GameCatalogue(){
+   ifstream file("GameCatalogue.txt");
+   string line;
+   while(getline(file,line)){
+        Game g=deserialization(line);
+        games.push_back(g);
+   }
+   file.close();
+}
+string GameCatalogue::serialization(Game g){
+   string s;
+   s=g.description+"*"+g.genre+"*"+to_string(g.id)+"*"+g.name+"*"+g.releaseDate+"*";
+   return s;
+}
+Game GameCatalogue::deserialization(string s){
+    Game g;
+    int count=0;
+    for(int i=0;i<s.size();i++){
+        string temp="";
+        while(i<s.size() && s[i]!='*'){
+            temp+=s[i];
+            i++;
+        }
+        if(count==0){
+            g.description=temp;
+        }
+        if(count==1){
+            g.genre=temp;
+        }
+        if(count==2){
+            g.id=stoi(temp);
+        }
+        if(count==3){
+            g.name=temp;
+        }
+        if(count==4){
+            g.releaseDate=temp;
+        }
+        count++;
+    }
+    return g;
+}
 void GameCatalogue::addGame(Game game,AuthorizedPerson *authorized_person){
    if(authorized_person->post()=="Admin"){ 
     games.push_back(game);
@@ -60,5 +103,13 @@ Game GameCatalogue::getGameById(int id) const{
             return games[i];
         }
     }
+}
+GameCatalogue::~GameCatalogue(){
+    ofstream file("GameCatalogue.txt");
+    for(int i=0;i<games.size();i++){
+        string s=serialization(games[i]);
+        file << s << endl;
+    }
+    file.close();
 }
 

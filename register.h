@@ -1,4 +1,3 @@
-
 #ifndef REGISTER_H
 #define REGISTER_H
 
@@ -7,14 +6,16 @@
 #include <ctime>
 using namespace std;
 
-struct Transaction {
-    string type;       // FOOD / RENT / CASHOUT
+struct Transaction
+{
+    string type; // FOOD / RENT / CASHOUT
     string description;
     double amount;
     time_t timestamp;
 };
 
-class Register {
+class Register
+{
 private:
     vector<Transaction> history;
     double totalCash;

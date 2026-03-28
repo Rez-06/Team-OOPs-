@@ -5,18 +5,20 @@
 #include "Food_menu.h"
 using namespace std;
 
-class Chef:public AuthorizedPerson{
+class Chef : public AuthorizedPerson
+{
 private:
-string joinDate;
-public:
-    Chef(string Name,int Id,string EMail,string JoinDate):AuthorizedPerson(Name,Id,EMail),joinDate(JoinDate){
+    string joinDate;
 
+public:
+    Chef(string Name, int Id, string EMail, string JoinDate) : AuthorizedPerson(Name, Id, EMail), joinDate(JoinDate)
+    {
     }
     void Identity() const;
-    string post() const;///return chef
-    void viewPendingOrders(KitchenQueue& queue);
-    void viewRecipe(int menuId, Food_menu& menu);
-    void completeOrder(KitchenQueue& queue);
+    string post() const; /// return chef
+    void viewPendingOrders(KitchenQueue &queue);
+    void viewRecipe(int menuId, Food_menu &menu);
+    void completeOrder(KitchenQueue &queue);
 };
 
 #endif

@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <string>
+#include "AuthorizedPerson.h"
 using namespace std;
 
 struct Game {
@@ -19,12 +20,17 @@ private:
     vector<Game> games;
 
 public:
+    GameCatalogue();
     void addGame(int id,string name,string genre,string description,string releaseDate,AuthorizedPerson *authorized_person);
     void addGame(Game game,AuthorizedPerson *authorized_person);
     void removeGame(int id,AuthorizedPerson *authorized_person);
     void viewAllGames() const;
     void GameInfo(Game g) const;
     Game getGameById(int id) const;
+    ~GameCatalogue();
+    string serialization(Game g);
+    Game deserialization(string s);
+    
 };
 
 #endif

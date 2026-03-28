@@ -1,102 +1,211 @@
-#include "Rental.h"
+#include "Register.h"
 #include <bits/stdc++.h>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
 using namespace std;
-static const char* RENTAL_FILE = "rental_slots.txt";
-static void loadBookings(map<string, int>& bookingSlots) {
-    ifstream in(RENTAL_FILE);
-    if (!in) return;
-    string line;
-    while (getline(in, line)) {
-        size_t p = line.find('|');
-        if (p == string::npos) continue;
-        string slot = line.substr(0, p);
-        int cnt = 0;
-        try {
-            cnt = stoi(line.substr(p + 1));
-        } catch (...) {
-            continue;
-        }
-        bookingSlots[slot] = cnt;
-    }
+static const char *TRANSACTION_FILE = "transactions.txt";
+static string formatTime(time_t t)
+{
+    tm *lt = localtime(&t);
+    if (!lt)
+        return "unknown-time";
+    ostringstream oss;
+    oss << put_time(lt, "%Y-%m-%d %H:%M:%S");
+    return oss.str();
 }
-static void saveBookings(const map<string, int>& bookingSlots) {
-    ofstream out(RENTAL_FILE);
-    if (!out) {
-        cout << "File error: cannot write rental_slots.txt\n";
+static bool parseLine(const string &line, Transaction &tx)
+{
+    size_t p1 = line.find('|');
+    size_t p2 = line.find('|', p1 == string::npos ? 0 : p1 + 1);
+    size_t p3 = line.find('|', p2 == string::npos ? 0 : p2 + 1);
+    if (p1 == string::npos || p2 == string::npos || p3 == string::npos)
+        return false;
+    tx.type = line.substr(0, p1);
+    tx.description = line.substr(p1 + 1, p2 - (p1 + 1));
+    try
+    {
+        tx.amount = stod(line.substr(p2 + 1, p3 - (p2 + 1)));
+        long long ts = stoll(line.substr(p3 + 1));
+        tx.timestamp = (time_t)ts;
+    }
+    catch (...)
+    {
+        return false;
+    }
+    return true;
+}
+static void appendToFile(const Transaction &tx)
+{
+    ofstream out(TRANSACTION_FILE, ios::app);
+    if (!out)
+    {
+        cout << "File error: cannot write transactions.txt\n";
         return;
     }
-    for (auto& it : bookingSlots) {
-        out << it.first << "|" << it.second << "\n";
+    out << tx.type << "|" << tx.description << "|" << tx.amount << "|" << (long long)tx.timestamp << "\n";
+}
+Register::Register()
+{
+    totalCash = 0.0;
+
+    ifstream in(TRANSACTION_FILE);
+    if (!in)
+    {
+        return;
+    }
+    string line;
+    while (getline(in, line))
+    {
+        Transaction tx;
+        if (parseLine(line, tx))
+        {
+            history.push_back(tx);
+            totalCash += tx.amount;
+        }
     }
 }
-Rental::Rental() {
-    totalSlots = 4;
-    baseOneHour = 150;
-    baseHalfHour = 100;
-    extraControllerHour = 50;
-    extraControllerHalf = 30;
-    loadBookings(bookingSlots);
+void Register::addTransaction(string type, string desc, double amount)
+{
+    if (type.empty())
+    {
+        throw invalid_argument("Transaction type cannot be empty");
+    }
+    if (desc.empty())
+    {
+        desc = "No description";
+    }
+    if (amount == 0.0)
+    {
+        throw invalid_argument("Transaction amount cannot be 0");
+    }
+    Transaction tx;
+    tx.type = type;
+    tx.description = desc;
+    tx.amount = amount;
+    tx.timestamp = time(nullptr);
+    history.push_back(tx);
+    totalCash += amount;
+    appendToFile(tx);
+    cout << "Transaction added: " << type << " | " << desc << " | " << amount << " BDT\n";
 }
-bool Rental::isAvailable(string timeSlot) const {
-    auto it = bookingSlots.find(timeSlot);
-    int booked = (it == bookingSlots.end()) ? 0 : it->second;
-    return booked < totalSlots;
+void Register::cashOut(double amount, string reason)
+{
+    if (amount <= 0)
+    {
+        throw invalid_argument("Cashout amount must be positive");
+    }
+    if (amount > totalCash)
+    {
+        throw runtime_error("Not enough cash in register");
+    }
+    if (reason.empty())
+        reason = "Cash out";
+    addTransaction("CASHOUT", reason, -amount);
 }
-double Rental::calculatePrice(int controllers, int minutes) const {
-    if (controllers < 1 || controllers > 4) {
-        throw invalid_argument("Controllers must be between 1 and 4");
-    }
-    if (!(minutes == 30 || minutes == 60)) {
-        throw invalid_argument("Minutes must be 30 or 60");
-    }
-    double base = (minutes == 60) ? baseOneHour : baseHalfHour;
-    int extra = 0;
-    if (controllers > 2) extra = controllers - 2;
-    double extraFee = 0.0;
-    if (extra > 0) {
-        if (minutes == 60) extraFee = extra * extraControllerHour;
-        else extraFee = extra * extraControllerHalf;
-    }
-    return base + extraFee;
+double Register::getTotalCash() const
+{
+    return totalCash;
 }
-void Rental::bookSlot(string timeSlot, int controllers, int minutes, Register& reg) {
-    if (timeSlot.empty()) {
-        throw invalid_argument("Time slot cannot be empty");
+void Register::viewHistory() const
+{
+    if (history.empty())
+    {
+        cout << "No transactions found.\n";
+        return;
     }
-    if (!isAvailable(timeSlot)) {
-        throw runtime_error("Selected time slot is fully booked");
+    cout << "\n====== Transaction History ======\n";
+    for (int i = 0; i < (int)history.size(); i++)
+    {
+        const Transaction &tx = history[i];
+        cout << i + 1 << ". [" << tx.type << "] " << tx.description << " | " << tx.amount << " BDT | " << formatTime(tx.timestamp) << "\n";
     }
-    double price = calculatePrice(controllers, minutes);
-    bookingSlots[timeSlot]++;      
-    saveBookings(bookingSlots);      
-    string desc = "Slot " + timeSlot + " (" + to_string(controllers) + " ctrl, " + to_string(minutes) + " min)";
-    reg.addTransaction("RENT", desc, price);
-    cout << "Booked successfully. Price: " << price << " BDT\n";
 }
-void Rental::updatePricing() {
-    cout << "\n--- Update Rental Pricing ---\n";
-    cout << "Current:\n";
-    cout << "1 hour base: " << baseOneHour << "\n";
-    cout << "30 min base: " << baseHalfHour << "\n";
-    cout << "Extra ctrl 1 hour: " << extraControllerHour << "\n";
-    cout << "Extra ctrl 30 min: " << extraControllerHalf << "\n";
-    cout << "\nEnter new base 1 hour price: ";
-    cin >> baseOneHour;
-    cout << "Enter new base 30 min price: ";
-    cin >> baseHalfHour;
-    cout << "Enter new extra controller 1 hour price: ";
-    cin >> extraControllerHour;
-    cout << "Enter new extra controller 30 min price: ";
-    cin >> extraControllerHalf;
-    cout << "Pricing updated.\n";
-}
-void Rental::updateSlots(int slots) {
-    if (slots <= 0) {
-        throw invalid_argument("Slots must be positive");
+void Register::showBestSellingFood() const
+{
+    if (history.empty())
+    {
+        cout << "No transactions.\n";
+        return;
     }
-    totalSlots = slots;
-    cout << "Total slots updated to " << totalSlots << "\n";
+    map<string, int> cnt;
+    map<string, double> income;
+    for (const auto &tx : history)
+    {
+        if (tx.type == "FOOD")
+        {
+            cnt[tx.description]++;
+            income[tx.description] += tx.amount;
+        }
+    }
+    if (cnt.empty())
+    {
+        cout << "No FOOD transactions found.\n";
+        return;
+    }
+    string best;
+    int bestCount = -1;
+    for (auto &it : cnt)
+    {
+        if (it.second > bestCount)
+        {
+            bestCount = it.second;
+            best = it.first;
+        }
+    }
+    cout << "Best-selling food: " << best << " (sold " << bestCount << " times, income " << income[best] << " BDT)\n";
+}
+void Register::showMostRentedGame() const
+{
+    if (history.empty())
+    {
+        cout << "No transactions.\n";
+        return;
+    }
+    map<string, int> cnt;
+    map<string, double> income;
+    for (const auto &tx : history)
+    {
+        if (tx.type == "RENT")
+        {
+            cnt[tx.description]++;
+            income[tx.description] += tx.amount;
+        }
+    }
+    if (cnt.empty())
+    {
+        cout << "No RENT transactions found.\n";
+        return;
+    }
+    string best;
+    int bestCount = -1;
+    for (auto &it : cnt)
+    {
+        if (it.second > bestCount)
+        {
+            bestCount = it.second;
+            best = it.first;
+        }
+    }
+    cout << "Most rented: " << best << " (rented " << bestCount << " times, income " << income[best] << " BDT)\n";
+}
+void Register::showIncomeSummary() const
+{
+    double foodIncome = 0.0;
+    double rentIncome = 0.0;
+    double cashoutTotal = 0.0;
+    for (const auto &tx : history)
+    {
+        if (tx.type == "FOOD")
+            foodIncome += tx.amount;
+        else if (tx.type == "RENT")
+            rentIncome += tx.amount;
+        else if (tx.type == "CASHOUT")
+            cashoutTotal += (-tx.amount); // tx.amount negative
+    }
+    cout << "\n====== Income Summary ======\n";
+    cout << "Food income : " << foodIncome << " BDT\n";
+    cout << "Rent income : " << rentIncome << " BDT\n";
+    cout << "Cashout     : " << cashoutTotal << " BDT\n";
+    cout << "Total cash  : " << totalCash << " BDT\n";
 }

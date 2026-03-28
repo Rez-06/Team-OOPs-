@@ -3,33 +3,42 @@
 #include <fstream>
 #include <stdexcept>
 using namespace std;
-void Chef::completeOrder(KitchenQueue& queue){
-    try{
-        if(!queue.hasOrders()){
+void Chef::completeOrder(KitchenQueue &queue)
+{
+    try
+    {
+        if (!queue.hasOrders())
+        {
             throw runtime_error("No orders available");
         }
         queue.completeOrder(this);
     }
-    catch(const exception& e){
+    catch (const exception &e)
+    {
         cout << e.what() << endl;
     }
 }
-static void showRecipeById(int menuId) {
+static void showRecipeById(int menuId)
+{
     ifstream file("menu.dat", ios::binary);
-    if (!file) {
+    if (!file)
+    {
         cout << "No menu found\n";
         return;
     }
     MenuItem item;
     bool found = false;
-    while (file.read(reinterpret_cast<char*>(&item), sizeof(item))) {
-        if (item.id == menuId) {
+    while (file.read(reinterpret_cast<char *>(&item), sizeof(item)))
+    {
+        if (item.id == menuId)
+        {
             cout << "\nFood: " << item.name << "\n";
             cout << "Price: " << item.price << " BDT\n";
             cout << "\n--Recipe--\n";
             cout << item.recipe << "\n";
             cout << "\n---Ingredients used---\n";
-            for (int i = 0; i < item.ingredientCount; i++) {
+            for (int i = 0; i < item.ingredientCount; i++)
+            {
                 cout << "Ingredient ID: " << item.ingredients[i].ingredientID
                      << " | Amount: " << item.ingredients[i].amount << "\n";
             }
@@ -38,27 +47,33 @@ static void showRecipeById(int menuId) {
         }
     }
     file.close();
-    if (!found) cout << "Food item not found\n";
+    if (!found)
+        cout << "Food item not found\n";
 }
-void Chef::Identity() const {
+void Chef::Identity() const
+{
     cout << "\n====== Chef Profile ======\n";
     cout << "Name : " << name << "\n";
     cout << "ID   : " << id << "\n";
     cout << "Email: " << eMail << "\n";
     cout << "Join : " << joinDate << "\n";
 }
-string Chef::post() const {
+string Chef::post() const
+{
     return "chef";
 }
-void Chef::viewPendingOrders(KitchenQueue& queue) {
-    if (!queue.hasOrders()) {
+void Chef::viewPendingOrders(KitchenQueue &queue)
+{
+    if (!queue.hasOrders())
+    {
         cout << "No pending orders.\n";
         return;
     }
     cout << "\nPending order (next in queue):\n";
-    Order& o = queue.getNextOrder();
+    Order &o = queue.getNextOrder();
     o.DisplayDetails();
 }
-void Chef::viewRecipe(int menuId, Food_menu&) {
+void Chef::viewRecipe(int menuId, Food_menu &)
+{
     showRecipeById(menuId);
 }

@@ -24,4 +24,5 @@ bool pass::isChef(){
     return( chef==true);
     }
 
+
 void pass::resetRoles() { admin = false; chef = false; }
